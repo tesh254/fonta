@@ -30,3 +30,40 @@ export const updateUserName = async (user, name) => {
     })
     .eq('id', user.id);
 };
+
+export const getFontsBasedByUser = async (userId) => {
+  const { data, error, count } = await supabase
+    .from('fonts')
+    .select('*')
+    .eq('user_id', userId);
+
+  if (error) {
+    throw error;
+  } else {
+    return {
+      fonts: data,
+      total: count
+    };
+  }
+};
+
+export const createFonts = async (fontData) => {
+  const { error, data } = await supabase.from('fonts').insert(fontData);
+
+  if (error) throw error;
+
+  return data;
+};
+
+export const updateFont = async (fontId, fontData) => {
+  const { error, data } = await supabase
+    .from('fonts')
+    .update({
+      ...fontData
+    })
+    .eq('id', fontId);
+
+  if (error) throw error;
+
+  return data;
+};

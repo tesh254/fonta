@@ -1,5 +1,6 @@
 import Layout from '@/components/Layout';
 import Button from '@/components/ui/Button';
+import ICONS from '@/components/ui/Icons';
 import { getActiveProductsWithPrices } from '@/utils/supabase-client';
 import { useUser } from '@/utils/useUser';
 import { useRouter } from 'next/router';
@@ -32,7 +33,7 @@ export default function IndexPage() {
                   variant="slim"
                   type="submit"
                 >
-                  Upload Font
+                  <span>Upload Font</span> {ICONS.upload('ml-2')}
                 </Button>
               ) : (
                 <Button
