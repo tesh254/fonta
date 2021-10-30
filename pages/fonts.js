@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useState, useEffect, useRef } from 'react';
+import toast, { Toaster } from 'react-hot-toast';
 
 import LoadingDots from '@/components/ui/LoadingDots';
 import Button from '@/components/ui/Button';
@@ -31,43 +32,76 @@ function Card({ title, description, footer, children }) {
 function AttachFile({ setFiles, file, currentIdx, removeItem }) {
   const [category, setCategory] = useState('otf');
   const hiddenFileInput = useRef(null);
+  const [fileBlob, setFile] = useState(null);
+  const [fileName, setFileName] = useState('');
+  const [dataUrl, setDataUrl] = useState('');
 
   function onChange(key, value) {
     setCategory(value);
-    setFiles(currentIdx, {
-      ...file,
-      [key]: value
-    });
   }
 
+  useEffect(() => {
+    if (dataUrl && category) {
+      setFiles(currentIdx, {
+        fileExtension: category,
+        fileDataUrl: dataUrl,
+        fileBlob: fileBlob,
+        fileId: currentIdx
+      });
+    }
+  }, [category, dataUrl]);
+
   function handleInputClick(event) {
+    // event.preventDefault();
     hiddenFileInput.current.click();
   }
 
   function getBase64(file) {
-    let reader = new FileReader();
+    if (file) {
+      file instanceof Blob;
 
-    reader.readAsDataURL(file);
+      let reader = new FileReader();
 
-    reader.onload = function () {
-      return reader.result;
-    };
+      reader.addEventListener(
+        'load',
+        function () {
+          setDataUrl(reader.result);
+        },
+        false
+      );
+
+      return reader.readAsDataURL(file);
+    }
   }
 
   function handleInputChange(event) {
+    event.preventDefault();
     const fileUploaded = event.target.files[0];
 
-    setFiles(currentIdx, {
-      ...file,
-      fileDataUrl: getBase64(fileUploaded),
-      fileBlob: fileUploaded,
-      saved: true
-    });
+    if (fileUploaded) {
+      const fileName = event.target.files[0].name;
+
+      const fileExtension = fileName.split('.').pop();
+
+      const extensions = ['otf', 'woff', 'eot', 'woff2', 'ttf'];
+
+      if (extensions.includes(fileExtension)) {
+        setFileName(event.target.files[0].name);
+
+        setCategory(fileExtension);
+
+        const res = getBase64(fileUploaded);
+
+        setFile(fileUploaded);
+      } else {
+        toast.error(`Font of extension .${fileExtension} file not supported`);
+      }
+    }
   }
 
   return (
     <section className="m-4 border border-accents-1 p-4 rounded-md">
-      <Select
+      {/* <Select
         label={`Select Extension`}
         onChange={(e) => onChange('fileExtension', e.target.value)}
         value={category}
@@ -77,33 +111,44 @@ function AttachFile({ setFiles, file, currentIdx, removeItem }) {
         <Select.Option>woff2</Select.Option>
         <Select.Option>eof</Select.Option>
         <Select.Option>ttf</Select.Option>
-      </Select>
+      </Select> */}
       <br />
-      <div class="flex items-center justify-center w-full">
-        <label
-          class="flex flex-col w-full h-32 border-4 rounded-md border-blue-200 border-dashed cursor-pointer"
+      <div className="flex items-center justify-center w-full">
+        <button
+          className="flex flex-row justify-center outline-none w-full h-32 border-4 rounded-md border-blue-200 border-dashed cursor-pointer"
           onClick={handleInputClick}
         >
-          <div class="flex flex-col items-center justify-center pt-7">
-            {ICONS.upload()}
-            <p class="pt-1 text-sm tracking-wider text-gray-400 group-hover:text-white">
-              Attach a font file
-            </p>
+          <div className="flex flex-col items-center justify-center pt-7">
+            {fileName ? (
+              <>
+                {ICONS.upload()}
+                <p className="pt-1 text-sm tracking-wider text-gray-400 group-hover:text-white">
+                  {fileName}
+                </p>
+              </>
+            ) : (
+              <>
+                {ICONS.upload()}
+                <p className="pt-1 text-sm tracking-wider text-gray-400 group-hover:text-white">
+                  Attach a font file
+                </p>
+              </>
+            )}
           </div>
           <input
             accept="font/ttf,font/woff,font/woff2,font/eot,font/otf"
             type="file"
             ref={hiddenFileInput}
-            class="hidden"
+            className="hidden"
             onChange={handleInputChange}
           />
-        </label>
+        </button>
       </div>
       <br />
       <section className="flex">
         {/* <button
           type="button"
-          class="inline-flex items-center px-4 py-2 border-none rounded-md shadow-sm text-sm font-medium text-white bg-green hover:bg-green-400"
+          className="inline-flex items-center px-4 py-2 border-none rounded-md shadow-sm text-sm font-medium text-white bg-green hover:bg-green-400"
           disabled={category ? false : true}
         >
           Save
@@ -111,7 +156,7 @@ function AttachFile({ setFiles, file, currentIdx, removeItem }) {
         <button
           type="button"
           onClick={() => removeItem(currentIdx)}
-          class="inline-flex items-center px-4 py-2 border-none rounded-md shadow-sm text-sm font-medium text-white bg-red hover:bg-red outline-none"
+          className="inline-flex items-center px-4 py-2 border-none rounded-md shadow-sm text-sm font-medium text-white bg-red hover:bg-red outline-none"
         >
           Remove
         </button>
@@ -120,10 +165,38 @@ function AttachFile({ setFiles, file, currentIdx, removeItem }) {
   );
 }
 
-function UploadForm() {
-  const { selectedFonts, setSelectedFonts } = useFonts();
-  const [category, setCategory] = useState('san-serif');
-  const [files, setFiles] = useState([]);
+function UploadForm({ onSuccess }) {
+  const {
+    selectedFonts,
+    setSelectedFonts,
+    uploadFonts,
+    uploadingFonts: loading
+  } = useFonts();
+  const [category, setCategory] = useState('sans-serif');
+  const [name, setName] = useState('');
+  const [files, setFiles] = useState([
+    {
+      fileExtension: '',
+      fileDataUrl: null,
+      fileBlob: null,
+      fileId: 1,
+      saved: false
+    }
+  ]);
+  const [fontWeight, setFontWeight] = useState(300);
+
+  useEffect(() => {
+    const _files = files.filter((item) => item.fileDataUrl !== null);
+
+    if (_files.length > 0 && name && category && fontWeight) {
+      setSelectedFonts(() => ({
+        name,
+        category,
+        fonts: [..._files],
+        fontWeight
+      }));
+    }
+  }, [files, category, name, fontWeight]);
 
   function addFiles() {
     const updatedFiles = [
@@ -140,8 +213,6 @@ function UploadForm() {
     setFiles(() => updatedFiles);
   }
 
-  console.log(files)
-
   function updateFile(id, fileData) {
     const updatedObject = files.map((file) =>
       file.fileId === id ? fileData : file
@@ -157,16 +228,16 @@ function UploadForm() {
   }
 
   return (
-    <div class="border border-accents-1	max-w-6xl w-full rounded-md m-auto my-8">
-      <div class="">
+    <div className="border border-accents-1	max-w-6xl w-full rounded-md m-auto my-8">
+      <div className="">
         <section className="m-4">
-          <label class="inline-block mb-2 text-white">Font Name</label>
+          <label className="inline-block mb-2 text-white">Font Name</label>
           <Input
             type="text"
             placeholder="Font name e.g. Arial or arial"
-            value={selectedFonts.name}
+            value={name}
             onChange={(VALUE) => {
-              setSelectedFonts((prev) => ({ ...prev, name: VALUE }));
+              setName(VALUE);
             }}
           />
         </section>
@@ -176,14 +247,25 @@ function UploadForm() {
             onChange={(e) => setCategory(e.target.value)}
             value={category}
           >
-            <Select.Option>san-serif</Select.Option>
+            <Select.Option>sans-serif</Select.Option>
             <Select.Option>serif</Select.Option>
             <Select.Option>monospace</Select.Option>
           </Select>
         </section>
-        <div class="m-4">
+        <section className="m-4">
+          <label className="inline-block mb-2 text-white">Font Weight</label>
+          <Input
+            type="number"
+            placeholder="Font weight e.g. 300 or 700"
+            value={fontWeight}
+            onChange={(VALUE) => {
+              setFontWeight(VALUE);
+            }}
+          />
+        </section>
+        <div className="m-4">
           <section className="flex justify-between place-items-center">
-            <label class="inline-block mb-2 text-white">File Select</label>
+            <label className="inline-block mb-2 text-white">File Select</label>
             <Button className="w-auto" onClick={addFiles}>
               <span>Add File</span> {ICONS.plus('ml-2')}
             </Button>
@@ -193,7 +275,7 @@ function UploadForm() {
               <AttachFile
                 file={file}
                 key={idx}
-                currentIdx={idx}
+                currentIdx={file.fileId}
                 setFiles={updateFile}
                 removeItem={removeItem}
               />
@@ -201,7 +283,16 @@ function UploadForm() {
           })}
         </div>
         <div className="flex justify-center p-2">
-          <Button className="w-full" disabled={!selectedFonts.name.length > 0}>
+          <Button
+            onClick={() => {
+              uploadFonts()
+                .then(() => {})
+                .catch(() => {});
+            }}
+            className="w-full"
+            disabled={!selectedFonts.name.length > 0}
+            loading={loading}
+          >
             Submit
           </Button>
         </div>
@@ -223,7 +314,7 @@ export default function Fonts() {
 
   return (
     <Layout title="Fonts">
-      <FontProvider user={user}>
+      <FontProvider user={user} onFontSubmitSuccess={() => setIsOpen(false)}>
         <section className="bg-black mb-32">
           <div className="max-w-6xl mx-auto sm:pt-24 pb-2 px-2 sm:px-6 lg:px-2 w-full">
             <div className="sm:flex flex sm:flex-row place-items-center sm:align-center  justify-between">
@@ -244,8 +335,8 @@ export default function Fonts() {
             </div>
           </div>
           <div className="px-2 py-1">
-            {isOpen && <UploadForm />}
-            <Card
+            {isOpen && <UploadForm onSuccess={() => setIsOpen(false)} />}
+            {/* <Card
               title="Your Email"
               description="Please enter the email address you want to use to login."
               footer={<p>We will email you to verify the change.</p>}
@@ -253,9 +344,33 @@ export default function Fonts() {
               <p className="text-xl mt-8 mb-4 font-semibold">
                 {user ? user.email : undefined}
               </p>
-            </Card>
+            </Card> */}
           </div>
         </section>
+        <Toaster
+          position="top-right"
+          reverseOrder={false}
+          gutter={8}
+          containerClassName=""
+          containerStyle={{}}
+          toastOptions={{
+            // Define default options
+            className: '',
+            duration: 5000,
+            style: {
+              background: '#363636',
+              color: '#fff'
+            },
+            // Default options for specific types
+            success: {
+              duration: 3000,
+              theme: {
+                primary: 'green',
+                secondary: 'black'
+              }
+            }
+          }}
+        />
       </FontProvider>
     </Layout>
   );

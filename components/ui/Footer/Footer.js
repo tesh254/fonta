@@ -23,21 +23,7 @@ export default function Footer() {
             <li className="py-3 md:py-0 md:pb-4">
               <Link href="/">
                 <a className="text-primary hover:text-accents-6 transition ease-in-out duration-150">
-                  Home
-                </a>
-              </Link>
-            </li>
-            <li className="py-3 md:py-0 md:pb-4">
-              <Link href="/">
-                <a className="text-primary hover:text-accents-6 transition ease-in-out duration-150">
-                  About
-                </a>
-              </Link>
-            </li>
-            <li className="py-3 md:py-0 md:pb-4">
-              <Link href="/">
-                <a className="text-primary hover:text-accents-6 transition ease-in-out duration-150">
-                  Careers
+                  Documentation
                 </a>
               </Link>
             </li>
@@ -73,29 +59,18 @@ export default function Footer() {
             </li>
           </ul>
         </div>
-        <div className="col-span-1 lg:col-span-6 flex items-start lg:justify-end text-primary">
-          <div className="flex space-x-6 items-center h-10">
-            <a
-              aria-label="Github Repository"
-              href="https://github.com/vercel/nextjs-subscription-payments"
-              className={s.link}
-            >
-              <GitHub />
-            </a>
-          </div>
-        </div>
       </div>
       <div className="py-12 flex flex-col md:flex-row justify-between items-center space-y-4 bg-primary-2">
         <div>
-          <span>&copy; 2020 ACME, Inc. All rights reserved.</span>
+          <span>&copy; {new Date().getFullYear()} Fonta.</span>
         </div>
         <div className="flex items-center">
           <span className="text-primary">Crafted by</span>
-          <a href="https://vercel.com" aria-label="Vercel.com Link">
+          <a href="https://bywachira.com" aria-label="bywachira.com link">
             <img
-              src="/vercel.svg"
+              src="https://pbs.twimg.com/profile_images/1388605610028109829/e5FX97PB_400x400.jpg"
               alt="Vercel.com Logo"
-              className="inline-block h-6 ml-4 text-primary"
+              className="inline-block h-6 ml-4 text-primary rounded-full"
             />
           </a>
         </div>

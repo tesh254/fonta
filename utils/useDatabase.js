@@ -5,6 +5,7 @@ import { toDateTime } from './helpers';
 // This entire file should be removed and moved to supabase-admin
 // It's not a react hook, so it shouldn't have useDatabase format
 // It should also properly catch and throw errors
+
 const upsertProductRecord = async (product) => {
   const productData = {
     id: product.id,
