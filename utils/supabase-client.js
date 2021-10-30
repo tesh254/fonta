@@ -30,6 +30,15 @@ export const createFontRecord = async (fontData) => {
   return data;
 };
 
+export const subscribeToFonts = async (onUpdate) => {
+  supabase
+    .from('fonts')
+    .on('*', (payload) => {
+      onUpdate(payload.data);
+    })
+    .subscribe();
+};
+
 export const updateFontRecord = async (fontId, fontData) => {
   const fontRecord = {
     font_name: fontData.name,

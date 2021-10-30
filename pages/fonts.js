@@ -13,6 +13,7 @@ import { FontProvider } from 'context/FontProvider';
 import { useFonts } from 'context/FontProvider';
 import { Select } from '@supabase/ui';
 import Input from '@/components/ui/Input';
+import FontCardItem from '@/components/ui/FontCardItem';
 
 function Card({ title, description, footer, children }) {
   return (
@@ -101,17 +102,6 @@ function AttachFile({ setFiles, file, currentIdx, removeItem }) {
 
   return (
     <section className="m-4 border border-accents-1 p-4 rounded-md">
-      {/* <Select
-        label={`Select Extension`}
-        onChange={(e) => onChange('fileExtension', e.target.value)}
-        value={category}
-      >
-        <Select.Option>otf</Select.Option>
-        <Select.Option>woff</Select.Option>
-        <Select.Option>woff2</Select.Option>
-        <Select.Option>eof</Select.Option>
-        <Select.Option>ttf</Select.Option>
-      </Select> */}
       <br />
       <div className="flex items-center justify-center w-full">
         <button
@@ -301,9 +291,66 @@ function UploadForm({ onSuccess }) {
   );
 }
 
-export default function Fonts() {
-  const [loading, setLoading] = useState(false);
-  const [fonts, setFonts] = useState([]);
+function Fonts({ isOpen, setIsOpen }) {
+  const { fonts } = useFonts();
+
+  return (
+    <>
+      <section className="bg-black mb-32">
+        <div className="max-w-6xl mx-auto sm:pt-24 pb-2 px-2 sm:px-6 lg:px-2 w-full">
+          <div className="sm:flex flex sm:flex-row place-items-center sm:align-center  justify-between">
+            <h1 className="text-4xl font-extrabold text-white sm:text-left sm:text-6xl">
+              Fonts
+            </h1>
+            <Button className="w-auto" onClick={() => setIsOpen(!isOpen)}>
+              {isOpen ? (
+                <>
+                  <span>Cancel</span> {ICONS.close('ml-2')}
+                </>
+              ) : (
+                <>
+                  <span>Upload Font</span> {ICONS.upload('ml-2')}
+                </>
+              )}
+            </Button>
+          </div>
+        </div>
+        <div className="px-2 py-1">
+          {isOpen && <UploadForm onSuccess={() => setIsOpen(false)} />}
+          {fonts.map((_font, idx) => {
+            return <FontCardItem {..._font} key={idx} />;
+          })}
+        </div>
+      </section>
+      <Toaster
+        position="top-right"
+        reverseOrder={false}
+        gutter={8}
+        containerClassName=""
+        containerStyle={{}}
+        toastOptions={{
+          // Define default options
+          className: '',
+          duration: 5000,
+          style: {
+            background: '#363636',
+            color: '#fff'
+          },
+          // Default options for specific types
+          success: {
+            duration: 3000,
+            theme: {
+              primary: 'green',
+              secondary: 'black'
+            }
+          }
+        }}
+      />
+    </>
+  );
+}
+
+export default function FontsContainer() {
   const router = useRouter();
   const { userLoaded, user, session, userDetails } = useUser();
   const [isOpen, setIsOpen] = useState(false);
@@ -315,62 +362,7 @@ export default function Fonts() {
   return (
     <Layout title="Fonts">
       <FontProvider user={user} onFontSubmitSuccess={() => setIsOpen(false)}>
-        <section className="bg-black mb-32">
-          <div className="max-w-6xl mx-auto sm:pt-24 pb-2 px-2 sm:px-6 lg:px-2 w-full">
-            <div className="sm:flex flex sm:flex-row place-items-center sm:align-center  justify-between">
-              <h1 className="text-4xl font-extrabold text-white sm:text-left sm:text-6xl">
-                Fonts
-              </h1>
-              <Button className="w-auto" onClick={() => setIsOpen(!isOpen)}>
-                {isOpen ? (
-                  <>
-                    <span>Cancel</span> {ICONS.close('ml-2')}
-                  </>
-                ) : (
-                  <>
-                    <span>Upload Font</span> {ICONS.upload('ml-2')}
-                  </>
-                )}
-              </Button>
-            </div>
-          </div>
-          <div className="px-2 py-1">
-            {isOpen && <UploadForm onSuccess={() => setIsOpen(false)} />}
-            {/* <Card
-              title="Your Email"
-              description="Please enter the email address you want to use to login."
-              footer={<p>We will email you to verify the change.</p>}
-            >
-              <p className="text-xl mt-8 mb-4 font-semibold">
-                {user ? user.email : undefined}
-              </p>
-            </Card> */}
-          </div>
-        </section>
-        <Toaster
-          position="top-right"
-          reverseOrder={false}
-          gutter={8}
-          containerClassName=""
-          containerStyle={{}}
-          toastOptions={{
-            // Define default options
-            className: '',
-            duration: 5000,
-            style: {
-              background: '#363636',
-              color: '#fff'
-            },
-            // Default options for specific types
-            success: {
-              duration: 3000,
-              theme: {
-                primary: 'green',
-                secondary: 'black'
-              }
-            }
-          }}
-        />
+        <Fonts isOpen={isOpen} setIsOpen={setIsOpen} />
       </FontProvider>
     </Layout>
   );

@@ -1,5 +1,6 @@
 import {
   getFontsBasedByUser,
+  subscribeToFonts,
   uploadFontToStorage
 } from '@/utils/supabase-client';
 import axios from 'axios';
@@ -138,8 +139,6 @@ export const FontProvider = ({ children, user, onFontSubmitSuccess }) => {
     try {
       const result = await getFontsBasedByUser(user?.id);
 
-      console.log(result);
-
       setFonts(() => [...result.fonts]);
     } catch (error) {
       console.log(error);
@@ -152,6 +151,9 @@ export const FontProvider = ({ children, user, onFontSubmitSuccess }) => {
     (async () => {
       await getFonts();
     })();
+    subscribeToFonts((newFonts) => {
+      setFonts((prev) => [...prev, ...newFonts]);
+    });
   }, [user]);
 
   return (
