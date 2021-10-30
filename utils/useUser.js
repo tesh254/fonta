@@ -30,12 +30,10 @@ export const UserContextProvider = (props) => {
 
   useEffect(() => {
     if (user) {
-      Promise.allSettled([getUserDetails()]).then(
-        (results) => {
-          setUserDetails(results[0].value.data);
-          setUserLoaded(true);
-        }
-      );
+      Promise.allSettled([getUserDetails()]).then((results) => {
+        setUserDetails(results[0].value.data);
+        setUserLoaded(true);
+      });
     }
   }, [user]);
 
@@ -45,8 +43,20 @@ export const UserContextProvider = (props) => {
     userDetails,
     userLoaded,
     subscription,
-    signIn: (options) => supabase.auth.signIn(options),
-    signUp: (options) => supabase.auth.signUp(options),
+    signIn: (options) =>
+      supabase.auth.signIn(options, {
+        redirectTo:
+          process.env.NEXT_PUBLIC_ENV === 'dev'
+            ? 'http://localhost:3000'
+            : 'https://fonta.vercel.app'
+      }),
+    signUp: (options) =>
+      supabase.auth.signUp(options, {
+        redirectTo:
+          process.env.NEXT_PUBLIC_ENV === 'dev'
+            ? 'http://localhost:3000'
+            : 'https://fonta.vercel.app'
+      }),
     signOut: () => {
       setUserDetails(null);
       setSubscription(null);

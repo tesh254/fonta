@@ -317,9 +317,17 @@ function Fonts({ isOpen, setIsOpen }) {
         </div>
         <div className="px-2 py-1">
           {isOpen && <UploadForm onSuccess={() => setIsOpen(false)} />}
-          {fonts.map((_font, idx) => {
-            return <FontCardItem {..._font} key={idx} />;
-          })}
+          <section className="max-w-6xl mx-auto">
+            {fonts.map((_font, idx) => {
+              return (
+                <FontCardItem
+                  {..._font}
+                  key={idx}
+                  font_link={`/font/${_font.id}`}
+                />
+              );
+            })}
+          </section>
         </div>
       </section>
       <Toaster
