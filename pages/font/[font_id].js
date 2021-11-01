@@ -63,14 +63,31 @@ export default function SingleFonts({ font }) {
           <Tab.Panels>
             <Tab.Panel>
               {url && (
-                <CopyBlock
-                  language={'css'}
-                  text={`@import url('${url}/api/host/${font?.id}');`}
-                  showLineNumbers={false}
-                  theme={vs2015}
-                  wrapLines={true}
-                  codeBlock
-                />
+                <section>
+                  <section className="mb-4 mt-4">
+                    <p>1. Add this to the top of your css file.</p>
+                    <CopyBlock
+                      language={'css'}
+                      text={`@import url('${url}/api/host/${font?.id}');`}
+                      showLineNumbers={false}
+                      theme={vs2015}
+                      wrapLines={true}
+                      codeBlock
+                    />
+                  </section>
+
+                  <section className="mb-4 mt-4">
+                    <p>2. Set font to any element,class, or id</p>
+                    <CopyBlock
+                      language={'css'}
+                      text={`/* ... */\nfont-family: '${font?.font_name}', ${font?.font_category};\n/* ... */`}
+                      showLineNumbers={false}
+                      theme={vs2015}
+                      wrapLines={true}
+                      codeBlock
+                    />
+                  </section>
+                </section>
               )}
             </Tab.Panel>
             <Tab.Panel></Tab.Panel>
