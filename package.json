@@ -16,6 +16,7 @@
     "aws-sdk": "^2.1017.0",
     "axios": "^0.24.0",
     "classnames": "2.2.6",
+    "cors": "^2.8.5",
     "goober": "^2.0.41",
     "goober-autoprefixer": "^1.2.1",
     "moment": "^2.29.1",

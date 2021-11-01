@@ -3,9 +3,69 @@ import { getFontById } from '@/utils/supabase-admin';
 import { useRouter } from 'next/router';
 import { CopyBlock, vs2015 } from 'react-code-blocks';
 import { Tab } from '@headlessui/react';
+import { Select } from '@supabase/ui';
 import { useEffect, useState } from 'react';
+import { SingleFontProvider } from 'context/SingleFontProvider';
+import { useSingleFont } from 'context/SingleFontProvider';
+import Input from '@/components/ui/Input';
+import Button from '@/components/ui/Button';
 
-export default function SingleFonts({ font }) {
+function EditFont() {
+  const {
+    editedFont: { font_name, font_category, font_weight },
+    handleChange,
+    updateFont,
+    isUpdating
+  } = useSingleFont();
+
+  return (
+    <div className="border border-accents-1	max-w-6xl w-full rounded-md m-auto my-8">
+      <div className="">
+        <section className="m-4">
+          <label className="inline-block mb-2 text-white">Font Name</label>
+          <Input
+            type="text"
+            placeholder="Font name e.g. Arial or arial"
+            value={font_name}
+            onChange={(value) => handleChange('font_name', value)}
+          />
+        </section>
+        <section className="m-4">
+          <Select
+            label={`Select Category`}
+            onChange={(e) => handleChange('font_category', e.target.value)}
+            value={font_category}
+          >
+            <Select.Option>sans-serif</Select.Option>
+            <Select.Option>serif</Select.Option>
+            <Select.Option>monospace</Select.Option>
+          </Select>
+        </section>
+        <section className="m-4">
+          <label className="inline-block mb-2 text-white">Font Weight</label>
+          <Input
+            type="number"
+            placeholder="Font weight e.g. 300 or 700"
+            value={font_weight}
+            onChange={(VALUE) => handleChange('font_weight', VALUE)}
+          />
+        </section>
+        <div className="flex justify-center p-2">
+          <Button
+            onClick={updateFont}
+            className="w-full"
+            disabled={!font_name.length < 0}
+            loading={isUpdating}
+          >
+            Update
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function SingleFonts({ font: fetchedFont }) {
   const router = useRouter();
   const [tabs, setTabs] = useState([
     {
@@ -18,6 +78,7 @@ export default function SingleFonts({ font }) {
     }
   ]);
   const [url, setUrl] = useState(null);
+  const [font, setFont] = useState(fetchedFont);
 
   function classNames(...classes) {
     return classes.filter(Boolean).join(' ');
@@ -90,7 +151,11 @@ export default function SingleFonts({ font }) {
                 </section>
               )}
             </Tab.Panel>
-            <Tab.Panel></Tab.Panel>
+            <Tab.Panel>
+              <SingleFontProvider font={font} updateGlobalFont={setFont}>
+                <EditFont />
+              </SingleFontProvider>
+            </Tab.Panel>
           </Tab.Panels>
         </Tab.Group>
       </section>

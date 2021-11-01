@@ -55,7 +55,8 @@ export const FontProvider = ({ children, user, onFontSubmitSuccess }) => {
         urls.push({
           font_link: url,
           font_extension: _font.fileExtension,
-          font_weight: _font.fontWeight
+          font_weight: _font.fontWeight,
+          font_size: newFile.size
         });
       }
 
@@ -139,7 +140,6 @@ export const FontProvider = ({ children, user, onFontSubmitSuccess }) => {
   }
 
   useEffect(() => {
-    console.log(uploadedUrls);
     if (uploadedUrls.length > 0 && !uploadingFonts) {
       saveFonts();
     }

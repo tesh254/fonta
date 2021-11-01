@@ -86,7 +86,7 @@ function AttachFile({ setFiles, file, currentIdx, removeItem }) {
 
       const extensions = ['otf', 'woff', 'eot', 'woff2', 'ttf'];
 
-      if (extensions.includes(fileExtension)) {
+      if (extensions.includes(fileExtension.toLowerCase())) {
         setFileName(event.target.files[0].name);
 
         setCategory(fileExtension);

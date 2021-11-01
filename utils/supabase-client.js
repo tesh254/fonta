@@ -20,9 +20,6 @@ export const createFontRecord = async (fontData) => {
   };
 
   const { data, error } = await supabase.from('fonts').insert([fontRecord]);
-
-  console.log({ data, error });
-
   if (error) throw error;
 
   return data;
@@ -37,19 +34,30 @@ export const subscribeToFonts = async (onUpdate) => {
     .subscribe();
 };
 
+export const getFontMetric = async (fontId) => {
+  const { data, error } = await supabase
+    .from('font_metrics')
+    .select('*')
+    .match({ font_id: fontId });
+  if (error) {
+    throw error;
+  }
+
+  return data;
+};
+
 export const updateFontRecord = async (fontId, fontData) => {
   const fontRecord = {
-    font_name: fontData.name,
-    font_css: fontData.css,
-    font_category: fontData.category,
-    allowed_domains: [],
-    user_id: fontData.user
+    font_name: fontData.font_name,
+    font_css: fontData.font_css,
+    font_category: fontData.font_category,
+    allowed_domains: []
   };
 
   const { data, error } = await supabase
     .from('fonts')
-    .insert([fontRecord], { upsert: false })
-    .eq('id', fontId);
+    .update(fontRecord)
+    .match({ id: fontId });
 
   if (error) throw error;
 

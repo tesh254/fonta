@@ -28,3 +28,15 @@ export const getFontById = async (fontId) => {
 
   return data;
 };
+
+export const createFontMetric = async (fontData) => {
+  const { data, error } = await supabaseAdmin
+    .from('font_metrics')
+    .insert([fontData]);
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+};

@@ -1,6 +1,10 @@
 import { getFontById } from '@/utils/supabase-admin';
 
 async function handler(req, res) {
+  if (req.method === 'OPTION') {
+    console.log(req.headers)
+  }
+
   if (req.method === 'GET') {
     const fontId = req.query.font_id;
 
