@@ -1,0 +1,12 @@
+name: "Fonta Metric Collector"
+on:
+  schedule:
+  - cron: "59 * * * *"
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Ping Backend URL'
+        run: curl -X POST 'https://6732-41-90-70-170.ngrok.io/api/metrics'
+        
