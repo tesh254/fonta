@@ -23,7 +23,12 @@ function FontCardItem({ font_name, created_at, font_weight, font_link }) {
               ).fromNow()}
             </h3>
           </CardContent>
-          <button className="p-2 bg-white text-black hover:text-gray-400 rounded-full absolute top-[-10px] right-[-10px]">
+          <button
+            className={`p-2 bg-white text-black hover:text-gray-400 rounded-full absolute ${css`
+              top: -10px;
+              right: -10px;
+            `}`}
+          >
             {ICONS.link()}
           </button>
         </section>

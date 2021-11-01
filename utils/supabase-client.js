@@ -1,6 +1,4 @@
-import { v4 as uuidv4 } from 'uuid';
 import { createClient } from '@supabase/supabase-js';
-import toast from 'react-hot-toast';
 import { v4 } from 'node_modules/uuid/dist';
 
 export const supabase = createClient(
@@ -34,7 +32,7 @@ export const subscribeToFonts = async (onUpdate) => {
   supabase
     .from('fonts')
     .on('*', (payload) => {
-      onUpdate(payload.data);
+      onUpdate(payload.data[0]);
     })
     .subscribe();
 };
@@ -56,32 +54,6 @@ export const updateFontRecord = async (fontId, fontData) => {
   if (error) throw error;
 
   return data;
-};
-
-export const getActiveProductsWithPrices = async () => {
-  const { data, error } = await supabase
-    .from('products')
-    .select('*, prices(*)')
-    .eq('active', true)
-    .eq('prices.active', true)
-    .order('metadata->index')
-    .order('unit_amount', { foreignTable: 'prices' });
-
-  if (error) {
-    console.log(error.message);
-    throw error;
-  }
-
-  return data || [];
-};
-
-export const updateUserName = async (user, name) => {
-  await supabase
-    .from('users')
-    .update({
-      full_name: name
-    })
-    .eq('id', user.id);
 };
 
 export const getFontsBasedByUser = async (userId) => {

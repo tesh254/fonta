@@ -323,7 +323,7 @@ function Fonts({ isOpen, setIsOpen }) {
                 <FontCardItem
                   {..._font}
                   key={idx}
-                  font_link={`/font/${_font.id}`}
+                  font_link={`/font/${_font?.id}`}
                 />
               );
             })}

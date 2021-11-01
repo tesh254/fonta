@@ -9,6 +9,7 @@
     "stripe:listen": "stripe listen --forward-to=localhost:3000/api/webhooks --project-name=saas-starter"
   },
   "dependencies": {
+    "@headlessui/react": "^1.4.1",
     "@stripe/stripe-js": "1.11.0",
     "@supabase/supabase-js": "latest",
     "@supabase/ui": "^0.35.0",
@@ -21,13 +22,15 @@
     "moment-timezone": "^0.5.33",
     "next": "latest",
     "next-s3-upload": "^0.1.7",
+    "postcss-nesting": "^9.0.0",
     "react": "17.0.1",
+    "react-code-blocks": "^0.0.9-0",
     "react-dom": "17.0.1",
     "react-hot-toast": "^2.1.1",
     "react-merge-refs": "1.1.0",
     "stripe": "8.132.0",
     "swr": "0.4.0",
-    "tailwindcss": "latest",
+    "tailwindcss": "2.0.2",
     "uuid": "^8.3.2"
   },
   "devDependencies": {

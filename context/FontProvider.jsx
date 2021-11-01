@@ -78,31 +78,42 @@ export const FontProvider = ({ children, user, onFontSubmitSuccess }) => {
     function cssGenerator(name, $fonts) {
       let css;
 
-      let _fonts = `src: `;
+      let _fonts;
 
-      $fonts.forEach((item, idx) => {
-        _fonts.concat(
-          `url('${item.font_link}') format('${item.font_extension}')${
-            $fonts.length - 1 === idx ? '; ' : ', '
-          }`
-        );
-      });
+      // $fonts.forEach((item, idx) => {
+      //   _fonts.concat(
+      //     `url('${item.font_link}') format('${item.font_extension}')${
+      //       $fonts.length - 1 === idx ? '; ' : ', '
+      //     }`
+      //   );
+      // });
+
+      _fonts = $fonts
+        .map(
+          (item, idx) =>
+            `url('${item.font_link}') format('${item.font_extension}')${
+              $fonts.length - 1 === idx ? '; ' : ', '
+            }`
+        )
+        .join(' ');
+
+      let fontCss = `src: `.concat(_fonts);
 
       css = `
-            /* ${data.name} */\n
-            @font-face {\n
-                font-family: '${name}';\n
-                font-style: normal;\n
-                font-weight: ${selectedFonts.fontWeight};\n
-                font-display: swap;\n
-                ${_fonts}\n
-            }\n
-        `;
+        /* ${name} */
+        @font-face {
+            font-family: '${name}';
+            font-style: normal;
+            font-weight: ${selectedFonts.fontWeight};
+            font-display: swap;
+            ${fontCss}
+        }
+      `;
 
       return css;
     }
 
-    const css = cssGenerator(data.font_name, data.font_urls);
+    const css = cssGenerator(data.name, data.font_urls);
 
     const payloadData = {
       name: data.name,
@@ -152,7 +163,7 @@ export const FontProvider = ({ children, user, onFontSubmitSuccess }) => {
       await getFonts();
     })();
     subscribeToFonts((newFonts) => {
-      setFonts((prev) => [...prev, ...newFonts]);
+      setFonts((prev) => [...prev, newFonts]);
     });
   }, [user]);
 

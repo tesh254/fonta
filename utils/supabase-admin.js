@@ -14,3 +14,17 @@ export const getUser = async (token) => {
 
   return data;
 };
+
+export const getFontById = async (fontId) => {
+  const { data, error } = await supabaseAdmin
+    .from('fonts')
+    .select('*')
+    .eq('id', fontId)
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+};
