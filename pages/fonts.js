@@ -292,7 +292,7 @@ function UploadForm({ onSuccess }) {
 }
 
 function Fonts({ isOpen, setIsOpen }) {
-  const { fonts } = useFonts();
+  const { fonts, gettingFonts } = useFonts();
 
   return (
     <>
@@ -318,15 +318,24 @@ function Fonts({ isOpen, setIsOpen }) {
         <div className="px-2 py-1">
           {isOpen && <UploadForm onSuccess={() => setIsOpen(false)} />}
           <section className="max-w-6xl mx-auto">
-            {fonts.map((_font, idx) => {
-              return (
-                <FontCardItem
-                  {..._font}
-                  key={idx}
-                  font_link={`/font/${_font?.id}`}
-                />
-              );
-            })}
+            {gettingFonts ? (
+              <section className="flex justify-center place-items-center">
+                <LoadingDots />
+              </section>
+            ) : (
+              <>
+                {fonts.map((_font, idx) => {
+                  console.log(_font);
+                  return (
+                    <FontCardItem
+                      {..._font}
+                      key={idx}
+                      font_link={`/font/${_font?.id}`}
+                    />
+                  );
+                })}
+              </>
+            )}
           </section>
         </div>
       </section>

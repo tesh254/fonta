@@ -29,6 +29,7 @@ export const subscribeToFonts = async (onUpdate) => {
   supabase
     .from('fonts')
     .on('*', (payload) => {
+      console.log(payload);
       onUpdate(payload.data[0]);
     })
     .subscribe();
@@ -68,6 +69,7 @@ export const getFontsBasedByUser = async (userId) => {
   const { data, error, count } = await supabase
     .from('fonts')
     .select('*')
+    .order('created_at', { ascending: false })
     .eq('user_id', userId);
 
   if (error) {

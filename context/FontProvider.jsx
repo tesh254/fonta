@@ -127,7 +127,7 @@ export const FontProvider = ({ children, user, onFontSubmitSuccess }) => {
 
     createFontRecord(payloadData)
       .then((res) => {
-        setFonts((prev) => [res.data, ...prev]);
+        setFonts((prev) => [res[0], ...prev]);
         setUploadedUrls([]);
         setUploadingFonts(false);
         onFontSubmitSuccess();
@@ -162,9 +162,6 @@ export const FontProvider = ({ children, user, onFontSubmitSuccess }) => {
     (async () => {
       await getFonts();
     })();
-    subscribeToFonts((newFonts) => {
-      setFonts((prev) => [...prev, newFonts]);
-    });
   }, [user]);
 
   return (
@@ -176,7 +173,8 @@ export const FontProvider = ({ children, user, onFontSubmitSuccess }) => {
         loading,
         selectedFonts,
         setSelectedFonts,
-        uploadingFonts
+        uploadingFonts,
+        gettingFonts: loading
       }}
     >
       {children}

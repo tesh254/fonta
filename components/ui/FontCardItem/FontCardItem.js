@@ -7,7 +7,7 @@ import { CardContent } from './styles';
 
 function FontCardItem({ font_name, created_at, font_weight, font_link }) {
   return (
-    <Link href={font_link}>
+    <Link prefetch href={font_link}>
       <a>
         <section
           className={`w-full hover:bg-white hover:text-black relative h-auto mt-2 mb-4 bg-black border border-1 border-gray-500 rounded-md px-2 py-4 ${css`

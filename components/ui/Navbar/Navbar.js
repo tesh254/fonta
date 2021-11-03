@@ -15,7 +15,7 @@ const Navbar = () => {
       <div className="mx-auto max-w-6xl px-6">
         <div className="flex justify-between align-center flex-row py-4 md:py-6 relative">
           <div className="flex flex-1 items-center">
-            <Link href="/">
+            <Link prefetch href="/">
               <a className={s.logo} aria-label="Logo">
                 <Logo />
               </a>
@@ -23,10 +23,10 @@ const Navbar = () => {
             <nav className="space-x-2 ml-6 hidden lg:block">
               {user && (
                 <>
-                  <Link href="/fonts">
+                  <Link prefetch href="/fonts">
                     <a className={s.link}>Fonts</a>
                   </Link>
-                  <Link href="/account">
+                  <Link prefetch href="/account">
                     <a className={s.link}>Account</a>
                   </Link>
                 </>
@@ -42,7 +42,7 @@ const Navbar = () => {
                 </a>
               </Link>
             ) : (
-              <Link href="/signin">
+              <Link prefetch href="/signin">
                 <a className={s.link}>Sign in</a>
               </Link>
             )}
