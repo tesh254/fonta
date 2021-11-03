@@ -9,6 +9,7 @@ import { SingleFontProvider } from 'context/SingleFontProvider';
 import { useSingleFont } from 'context/SingleFontProvider';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
+import { useUser } from '@/utils/useUser';
 
 function EditFont() {
   const {
@@ -79,6 +80,7 @@ export default function SingleFonts({ font: fetchedFont }) {
   ]);
   const [url, setUrl] = useState(null);
   const [font, setFont] = useState(fetchedFont);
+  const { user, userLoaded } = useUser();
 
   function classNames(...classes) {
     return classes.filter(Boolean).join(' ');
@@ -88,6 +90,11 @@ export default function SingleFonts({ font: fetchedFont }) {
     if (!font) {
       router.push(`'/404`);
     }
+
+    if (!user && userLoaded) {
+      router.push(`/signin`);
+    }
+
     const { location } = window;
     setUrl(location.protocol + '//' + location.host);
   }, []);

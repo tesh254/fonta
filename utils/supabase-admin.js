@@ -40,3 +40,13 @@ export const createFontMetric = async (fontData) => {
 
   return data;
 };
+
+export const getAllFontsForMets = async () => {
+  const { data, error } = await supabaseAdmin.from('fonts').select('*');
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+};
