@@ -29,7 +29,6 @@ export const subscribeToFonts = async (onUpdate) => {
   supabase
     .from('fonts')
     .on('*', (payload) => {
-      console.log(payload);
       onUpdate(payload.data[0]);
     })
     .subscribe();
