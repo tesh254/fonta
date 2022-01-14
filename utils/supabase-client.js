@@ -101,3 +101,12 @@ export const updateFont = async (fontId, fontData) => {
 
   return data;
 };
+
+export const updateUserName = async (user, name) => {
+  await supabase
+    .from('users')
+    .update({
+      full_name: name
+    })
+    .eq('id', user.id);
+};
