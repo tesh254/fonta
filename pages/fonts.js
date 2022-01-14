@@ -325,7 +325,6 @@ function Fonts({ isOpen, setIsOpen }) {
             ) : (
               <>
                 {fonts.map((_font, idx) => {
-                  console.log(_font);
                   return (
                     <FontCardItem
                       {..._font}

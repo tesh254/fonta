@@ -28,8 +28,6 @@ export const SingleFontProvider = ({
     }));
   };
 
-  console.log(newFont)
-
   const onUpdate = () => {
     let css;
     let _fonts;
